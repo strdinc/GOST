@@ -44,7 +44,7 @@ function TraceNode({ item, path, level = 0 }) {
 function App() {
   const [sourceBytes, setSourceBytes] = useState("55 65 51 33 4D 95 59 C7 93 8C BD E3 D6 AB 2F 79");
   const [aMapping, setAMapping] = useState("3 13 14 11 4 10 15 9 1 0 12 2 5 8 6 7");
-  const [bMapping, setBMapping] = useState("0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15");
+  const [bMapping, setBMapping] = useState("15 7 9 0 6 12 2 14 10 4 8 1 11 3 13 5");
   const [keyBytes, setKeyBytes] = useState("88 99 AA BB CC DD EE FF 00 11 22 33 44 55 66 77");
   const [actions, setActions] = useState([]);
   const [summaryHtml, setSummaryHtml] = useState("");
@@ -86,11 +86,7 @@ function App() {
   return (
     <main className="page">
       <section className="hero panel">
-        <p className="eyebrow">KUZNYECHIK WEB LAB</p>
-        <h1>Пошаговая визуализация преобразований</h1>
-        <p className="subtitle">
-          Интерфейс показывает действия как структурированные блоки: текст и HTML-таблицы без терминального вывода.
-        </p>
+        <p className="eyebrow">KUZNYECHIK WEB</p>
       </section>
 
       <section className="panel">
