@@ -1,0 +1,261 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=JetBrains+Mono:wght@400;500&display=swap");
+
+:root {
+  --bg-a: #111a2c;
+  --bg-b: #173556;
+  --bg-c: #2c4f66;
+  --surface: rgba(248, 252, 255, 0.95);
+  --surface-soft: #eef6ff;
+  --ink: #18243a;
+  --muted: #4e6078;
+  --line: #c8d9ef;
+  --accent: #007dff;
+  --accent-2: #00b1a7;
+  --danger: #8b2323;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 12% 16%, rgba(0, 177, 167, 0.3), transparent 34%),
+    radial-gradient(circle at 86% 5%, rgba(0, 125, 255, 0.38), transparent 30%),
+    linear-gradient(155deg, var(--bg-a), var(--bg-b) 48%, var(--bg-c));
+  font-family: "JetBrains Mono", monospace;
+}
+
+.page {
+  width: min(1280px, 95vw);
+  margin: 20px auto 34px;
+  display: grid;
+  gap: 14px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow:
+    0 16px 30px rgba(8, 18, 32, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.58);
+}
+
+.hero {
+  background: linear-gradient(150deg, rgba(250, 253, 255, 0.95), rgba(234, 245, 255, 0.93));
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  font-size: 0.74rem;
+  width: fit-content;
+  color: #daf2ff;
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.08em;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+}
+
+h1,
+h2,
+h3 {
+  margin: 0 0 10px;
+  font-family: "Manrope", sans-serif;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--muted);
+}
+
+.input-grid {
+  display: grid;
+  gap: 12px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.93rem;
+}
+
+textarea,
+input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 11px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-family: "JetBrains Mono", monospace;
+}
+
+textarea:focus,
+input:focus {
+  outline: 2px solid rgba(0, 125, 255, 0.2);
+  border-color: #83b8ef;
+}
+
+button {
+  justify-self: start;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 16px;
+  color: #fff;
+  font-family: "Manrope", sans-serif;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 8px 18px rgba(0, 125, 255, 0.34);
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: progress;
+  filter: grayscale(0.35);
+}
+
+.error {
+  color: var(--danger);
+  border-color: #e7b8b8;
+  background: #fff4f4;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  font-size: 0.75rem;
+  background: #e8f4ff;
+  border: 1px solid #bfdbf8;
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+.trace-list {
+  margin-top: 10px;
+  display: grid;
+  gap: 10px;
+}
+
+.trace-node {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fcfeff;
+  overflow: hidden;
+}
+
+.trace-node summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  background: linear-gradient(180deg, #f8fcff, #ecf6ff);
+}
+
+.trace-node summary::-webkit-details-marker {
+  display: none;
+}
+
+.badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 0.73rem;
+  color: #fff;
+  background: linear-gradient(135deg, #007dff, #005dcc);
+}
+
+.trace-body {
+  padding: 10px;
+  display: grid;
+  gap: 10px;
+}
+
+.blocks {
+  display: grid;
+  gap: 8px;
+}
+
+.block-text p {
+  margin: 0;
+  color: var(--ink);
+}
+
+.children {
+  display: grid;
+  gap: 8px;
+}
+
+.trace-node.level-1 summary {
+  background: linear-gradient(180deg, #fbfeff, #f3f9ff);
+}
+
+.trace-node.level-2 summary {
+  background: linear-gradient(180deg, #ffffff, #f8fbff);
+}
+
+.table-wrap,
+.block-table {
+  overflow-x: auto;
+}
+
+.table-caption {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+table.trace-table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+table.trace-table th,
+table.trace-table td {
+  border: 1px solid var(--line);
+  padding: 7px 8px;
+  text-align: left;
+  vertical-align: top;
+}
+
+table.trace-table th {
+  background: #eaf4ff;
+}
+
+@media (max-width: 840px) {
+  .page {
+    width: 96vw;
+  }
+
+  .panel {
+    padding: 12px;
+  }
+
+  table.trace-table {
+    min-width: 560px;
+  }
+}
