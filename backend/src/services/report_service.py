@@ -80,7 +80,55 @@ def markdown_to_pdf_bytes(markdown: str) -> bytes:
         tmp_path = Path(tmp_dir)
         md_path = tmp_path / "report.md"
         pdf_path = tmp_path / "report.pdf"
+        css_path = tmp_path / "report.css"
         md_path.write_text(markdown, encoding="utf-8")
+        css_path.write_text(
+            """
+@page {
+  size: A4;
+  margin: 1cm;
+}
+
+body {
+  font-size: 12pt;
+  line-height: 1.25;
+}
+
+h1 {
+  font-size: 16pt;
+  margin: 0 0 8px 0;
+}
+
+h2 {
+  font-size: 14pt;
+  margin: 8px 0 6px 0;
+}
+
+h3, h4, h5, h6 {
+  font-size: 13pt;
+  margin: 6px 0 4px 0;
+}
+
+p, li {
+  font-size: 12pt;
+  margin: 3px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 11pt;
+}
+
+th, td {
+  border: 1px solid #777;
+  padding: 3px 4px;
+  word-wrap: break-word;
+}
+            """.strip(),
+            encoding="utf-8",
+        )
 
         command = [
             "pandoc",
@@ -91,6 +139,8 @@ def markdown_to_pdf_bytes(markdown: str) -> bytes:
             "gfm+raw_html",
             "--pdf-engine",
             "weasyprint",
+            "--css",
+            str(css_path),
         ]
         try:
             subprocess.run(command, check=True, capture_output=True, text=True)
