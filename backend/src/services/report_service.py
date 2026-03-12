@@ -90,7 +90,7 @@ def markdown_to_pdf_bytes(markdown: str) -> bytes:
             "--from",
             "gfm+raw_html",
             "--pdf-engine",
-            "wkhtmltopdf",
+            "weasyprint",
         ]
         try:
             subprocess.run(command, check=True, capture_output=True, text=True)
