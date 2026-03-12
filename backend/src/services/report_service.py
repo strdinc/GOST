@@ -90,41 +90,48 @@ def markdown_to_pdf_bytes(markdown: str) -> bytes:
 }
 
 body {
-  font-size: 12pt;
-  line-height: 1.25;
+  font-size: 10pt;
+  line-height: 1.15;
 }
 
 h1 {
-  font-size: 16pt;
+  font-size: 13pt;
   margin: 0 0 8px 0;
 }
 
 h2 {
-  font-size: 14pt;
+  font-size: 12pt;
   margin: 8px 0 6px 0;
 }
 
 h3, h4, h5, h6 {
-  font-size: 13pt;
+  font-size: 11pt;
   margin: 6px 0 4px 0;
 }
 
 p, li {
-  font-size: 12pt;
+  font-size: 10pt;
   margin: 3px 0;
 }
 
 table {
-  width: 100%;
+  width: auto;
+  max-width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
-  font-size: 11pt;
+  table-layout: auto;
+  font-size: 9pt;
 }
 
 th, td {
   border: 1px solid #777;
-  padding: 3px 4px;
+  padding: 2px 3px;
   word-wrap: break-word;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  text-align: left !important;
 }
             """.strip(),
             encoding="utf-8",
