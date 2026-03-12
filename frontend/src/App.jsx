@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+﻿import { useMemo, useState } from "react";
 import "./App.css";
 
 function HtmlBlock({ block }) {
@@ -41,6 +41,17 @@ function TraceNode({ item, path, level = 0 }) {
   );
 }
 
+function parseFilename(contentDisposition) {
+  if (!contentDisposition) {
+    return "gost-full-report.pdf";
+  }
+  const match = contentDisposition.match(/filename\*?=(?:UTF-8''|\")?([^\";]+)/i);
+  if (!match) {
+    return "gost-full-report.pdf";
+  }
+  return decodeURIComponent(match[1].replace(/\"/g, ""));
+}
+
 function App() {
   const [sourceBytes, setSourceBytes] = useState("55 65 51 33 4D 95 59 C7 93 8C BD E3 D6 AB 2F 79");
   const [aMapping, setAMapping] = useState("3 13 14 11 4 10 15 9 1 0 12 2 5 8 6 7");
@@ -49,7 +60,15 @@ function App() {
   const [actions, setActions] = useState([]);
   const [summaryHtml, setSummaryHtml] = useState("");
   const [loading, setLoading] = useState(false);
+  const [pdfLoading, setPdfLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const payload = {
+    sourceBytes,
+    aMapping,
+    bMapping,
+    keyBytes,
+  };
 
   const stats = useMemo(() => {
     const top = actions.length;
@@ -68,7 +87,7 @@ function App() {
       const response = await fetch("/api/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sourceBytes, aMapping, bMapping, keyBytes }),
+        body: JSON.stringify(payload),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -80,6 +99,39 @@ function App() {
       setError(err.message || "Не удалось выполнить вычисления.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function downloadPdf() {
+    setPdfLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/report/pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || "Не удалось сформировать PDF.");
+      }
+
+      const blob = await response.blob();
+      const filename = parseFilename(response.headers.get("content-disposition"));
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err.message || "Не удалось скачать PDF.");
+    } finally {
+      setPdfLoading(false);
     }
   }
 
@@ -107,7 +159,7 @@ function App() {
             Ключ k (16 hex):
             <textarea value={keyBytes} onChange={(e) => setKeyBytes(e.target.value)} rows={2} required />
           </label>
-          <button type="submit" disabled={loading}>
+          <button type="submit" disabled={loading || pdfLoading}>
             {loading ? "Считаю..." : "Запустить"}
           </button>
         </form>
@@ -119,6 +171,11 @@ function App() {
         <section className="panel">
           <h2>Финальная сводка</h2>
           <div className="table-wrap" dangerouslySetInnerHTML={{ __html: summaryHtml }} />
+          <div className="summary-actions">
+            <button type="button" className="secondary" onClick={downloadPdf} disabled={pdfLoading || loading}>
+              {pdfLoading ? "Готовлю PDF..." : "Скачать в PDF"}
+            </button>
+          </div>
         </section>
       )}
 

@@ -221,6 +221,15 @@ button:disabled {
   overflow-x: auto;
 }
 
+.summary-actions {
+  margin-top: 12px;
+}
+
+.secondary {
+  background: linear-gradient(135deg, #0f2f5a, #1b4d84);
+  box-shadow: 0 8px 18px rgba(15, 47, 90, 0.28);
+}
+
 .table-caption {
   font-size: 0.82rem;
   color: var(--muted);

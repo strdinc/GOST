@@ -11,6 +11,12 @@ RUN mkdir -p backend/dist && cd frontend && npm run build
 FROM python:3.13-slim AS runtime
 WORKDIR /app/backend
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    pandoc \
+    wkhtmltopdf \
+    fonts-dejavu-core \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 

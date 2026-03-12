@@ -65,3 +65,24 @@ docker compose up -d --build
 - Терминальный дамп убран из UI.
 - Все таблицы строятся через `pandas.DataFrame` и рендерятся как HTML-таблицы.
 - Пункты 7-11 разбиты на отдельные выпадающие шаги.
+- В блоке «Финальная сводка» есть кнопка «Скачать в PDF».
+- Для PDF-экспорта на сервере нужен `pandoc` (кнопка использует backend endpoint `/api/report/pdf`).
+  В Docker-образе зависимости для PDF уже устанавливаются автоматически (`pandoc + wkhtmltopdf`).
+
+## Скрипт полного отчета (MD -> PDF)
+
+Скрипт: `backend/scripts/generate_report.py`
+
+Пример:
+
+```powershell
+python backend/scripts/generate_report.py `
+  --source-bytes "55 65 51 33 4D 95 59 C7 93 8C BD E3 D6 AB 2F 79" `
+  --a-mapping "3 13 14 11 4 10 15 9 1 0 12 2 5 8 6 7" `
+  --b-mapping "0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" `
+  --key-bytes "88 99 AA BB CC DD EE FF 00 11 22 33 44 55 66 77" `
+  --output-dir reports
+```
+
+Сначала всегда создается `.md`, затем скрипт пытается собрать `.pdf` через `pandoc`.
+Если `pandoc` не установлен, остается только `.md` (с понятным сообщением).
