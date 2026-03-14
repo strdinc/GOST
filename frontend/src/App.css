@@ -223,11 +223,19 @@ button:disabled {
 
 .summary-actions {
   margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .secondary {
   background: linear-gradient(135deg, #0f2f5a, #1b4d84);
   box-shadow: 0 8px 18px rgba(15, 47, 90, 0.28);
+}
+
+.ghost {
+  background: linear-gradient(135deg, #355874, #55778f);
+  box-shadow: 0 8px 18px rgba(53, 88, 116, 0.24);
 }
 
 .table-caption {

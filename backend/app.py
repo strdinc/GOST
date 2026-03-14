@@ -57,6 +57,29 @@ def report_pdf():
     )
 
 
+@app.post("/api/report/simple-pdf")
+def report_simple_pdf():
+    payload = request.get_json(silent=True)
+    if payload is None:
+        return jsonify({"error": "Тело запроса должно быть JSON."}), 400
+    try:
+        filename, _, pdf_bytes = build_pdf_report(payload, simple=True)
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+    except RuntimeError as exc:
+        return jsonify({"error": str(exc)}), 500
+    except Exception as exc:
+        return jsonify({"error": f"Внутренняя ошибка сервера: {exc}"}), 500
+
+    download_name = filename or f"gost-simple-report-{datetime.now():%Y%m%d-%H%M%S}.pdf"
+    return send_file(
+        io.BytesIO(pdf_bytes),
+        mimetype="application/pdf",
+        as_attachment=True,
+        download_name=download_name,
+    )
+
+
 @app.get("/")
 def index():
     index_path = DIST_DIR / "index.html"

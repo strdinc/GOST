@@ -41,13 +41,13 @@ function TraceNode({ item, path, level = 0 }) {
   );
 }
 
-function parseFilename(contentDisposition) {
+function parseFilename(contentDisposition, fallbackName = "gost-full-report.pdf") {
   if (!contentDisposition) {
-    return "gost-full-report.pdf";
+    return fallbackName;
   }
   const match = contentDisposition.match(/filename\*?=(?:UTF-8''|\")?([^\";]+)/i);
   if (!match) {
-    return "gost-full-report.pdf";
+    return fallbackName;
   }
   return decodeURIComponent(match[1].replace(/\"/g, ""));
 }
@@ -61,6 +61,7 @@ function App() {
   const [summaryHtml, setSummaryHtml] = useState("");
   const [loading, setLoading] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [simplePdfLoading, setSimplePdfLoading] = useState(false);
   const [error, setError] = useState("");
 
   const payload = {
@@ -102,12 +103,12 @@ function App() {
     }
   }
 
-  async function downloadPdf() {
-    setPdfLoading(true);
+  async function downloadReport(endpoint, fallbackName, setBusy) {
+    setBusy(true);
     setError("");
 
     try {
-      const response = await fetch("/api/report/pdf", {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -119,7 +120,7 @@ function App() {
       }
 
       const blob = await response.blob();
-      const filename = parseFilename(response.headers.get("content-disposition"));
+      const filename = parseFilename(response.headers.get("content-disposition"), fallbackName);
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
@@ -131,8 +132,16 @@ function App() {
     } catch (err) {
       setError(err.message || "Не удалось скачать PDF.");
     } finally {
-      setPdfLoading(false);
+      setBusy(false);
     }
+  }
+
+  function downloadPdf() {
+    return downloadReport("/api/report/pdf", "gost-full-report.pdf", setPdfLoading);
+  }
+
+  function downloadSimplePdf() {
+    return downloadReport("/api/report/simple-pdf", "gost-simple-report.pdf", setSimplePdfLoading);
   }
 
   return (
@@ -159,7 +168,7 @@ function App() {
             Ключ k (16 hex):
             <textarea value={keyBytes} onChange={(e) => setKeyBytes(e.target.value)} rows={2} required />
           </label>
-          <button type="submit" disabled={loading || pdfLoading}>
+          <button type="submit" disabled={loading || pdfLoading || simplePdfLoading}>
             {loading ? "Считаю..." : "Запустить"}
           </button>
         </form>
@@ -172,8 +181,11 @@ function App() {
           <h2>Финальная сводка</h2>
           <div className="table-wrap" dangerouslySetInnerHTML={{ __html: summaryHtml }} />
           <div className="summary-actions">
-            <button type="button" className="secondary" onClick={downloadPdf} disabled={pdfLoading || loading}>
+            <button type="button" className="secondary" onClick={downloadPdf} disabled={pdfLoading || loading || simplePdfLoading}>
               {pdfLoading ? "Готовлю PDF..." : "Скачать в PDF"}
+            </button>
+            <button type="button" className="secondary ghost" onClick={downloadSimplePdf} disabled={simplePdfLoading || loading || pdfLoading}>
+              {simplePdfLoading ? "Готовлю простой PDF..." : "Скачать простой PDF"}
             </button>
           </div>
         </section>
