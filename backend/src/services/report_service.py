@@ -84,6 +84,10 @@ def build_markdown_report(result: dict[str, Any], payload: dict[str, Any]) -> st
         action_copy["title"] = f"{idx}. {action.get('title', 'Действие')}"
         lines.extend(render_node_markdown(action_copy, 2))
 
+    checks_html = result.get("checksTableHtml", "")
+    if checks_html:
+        lines.extend(["## Финальная проверка", "", checks_html, ""])
+
     return "\n".join(lines).strip() + "\n"
 
 
@@ -318,7 +322,6 @@ def build_simple_markdown_report(payload: dict[str, Any]) -> str:
     lines.extend(l_lines)
     lines.extend(l_inv_lines)
     lines.extend(f_lines)
-    lines.extend(render_checks_lines(a_vector))
     lines.extend(
         render_final_hex_lines(
             source,
@@ -335,6 +338,7 @@ def build_simple_markdown_report(payload: dict[str, Any]) -> str:
             f_result,
         )
     )
+    lines.extend(render_checks_lines(a_vector))
 
     return "\n".join(lines).strip() + "\n"
 
@@ -396,6 +400,17 @@ th, td {
 
 th {
   text-align: left !important;
+}
+
+.vector-matrix {
+  display: inline-grid;
+  gap: 2px;
+}
+
+.vector-matrix-row {
+  display: grid;
+  grid-template-columns: repeat(4, max-content);
+  gap: 8px;
 }
             """.strip(),
             encoding="utf-8",

@@ -59,6 +59,7 @@ function App() {
   const [keyBytes, setKeyBytes] = useState("88 99 AA BB CC DD EE FF 00 11 22 33 44 55 66 77");
   const [actions, setActions] = useState([]);
   const [summaryHtml, setSummaryHtml] = useState("");
+  const [checksHtml, setChecksHtml] = useState("");
   const [loading, setLoading] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
   const [simplePdfLoading, setSimplePdfLoading] = useState(false);
@@ -83,6 +84,7 @@ function App() {
     setError("");
     setActions([]);
     setSummaryHtml("");
+    setChecksHtml("");
 
     try {
       const response = await fetch("/api/run", {
@@ -96,6 +98,7 @@ function App() {
       }
       setActions(data.actions || []);
       setSummaryHtml(data.summaryTableHtml || "");
+      setChecksHtml(data.checksTableHtml || "");
     } catch (err) {
       setError(err.message || "Не удалось выполнить вычисления.");
     } finally {
@@ -180,6 +183,12 @@ function App() {
         <section className="panel">
           <h2>Финальная сводка</h2>
           <div className="table-wrap" dangerouslySetInnerHTML={{ __html: summaryHtml }} />
+          {checksHtml && (
+            <>
+              <h3>Финальная проверка</h3>
+              <div className="table-wrap" dangerouslySetInnerHTML={{ __html: checksHtml }} />
+            </>
+          )}
           <div className="summary-actions">
             <button type="button" className="secondary" onClick={downloadPdf} disabled={pdfLoading || loading || simplePdfLoading}>
               {pdfLoading ? "Готовлю PDF..." : "Скачать в PDF"}

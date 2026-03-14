@@ -244,6 +244,21 @@ button:disabled {
   margin-bottom: 6px;
 }
 
+.vector-matrix {
+  display: inline-grid;
+  gap: 2px;
+}
+
+.vector-matrix-row {
+  display: grid;
+  grid-template-columns: repeat(4, max-content);
+  gap: 8px;
+}
+
+.vector-matrix-item {
+  display: inline-block;
+}
+
 table.trace-table {
   width: 100%;
   min-width: 640px;

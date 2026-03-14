@@ -104,8 +104,32 @@ def block_text(text: str) -> dict[str, str]:
     return {"type": "text", "html": f"<p>{safe}</p>"}
 
 
+def format_vector_cell(value: Any) -> Any:
+    if not isinstance(value, str):
+        return value
+
+    tokens = value.strip().split()
+    if len(tokens) != 16:
+        return html.escape(value)
+
+    is_hex_vector = all(re.fullmatch(r"[0-9A-F]{2}", token) for token in tokens)
+    is_bin_vector = all(re.fullmatch(r"[01]{8}", token) for token in tokens)
+    if not (is_hex_vector or is_bin_vector):
+        return html.escape(value)
+
+    rows = []
+    for index in range(0, 16, 4):
+        row_tokens = tokens[index:index + 4]
+        cells = "".join(f"<span class='vector-matrix-item'>{html.escape(token)}</span>" for token in row_tokens)
+        rows.append(f"<span class='vector-matrix-row'>{cells}</span>")
+    return f"<span class='vector-matrix'>{''.join(rows)}</span>"
+
+
 def df_to_html(df: pd.DataFrame) -> str:
-    return df.to_html(index=False, classes="trace-table", border=0)
+    rendered_df = df.copy()
+    for column in rendered_df.columns:
+        rendered_df[column] = rendered_df[column].map(format_vector_cell)
+    return rendered_df.to_html(index=False, classes="trace-table", border=0, escape=False)
 
 
 def block_table(df: pd.DataFrame, caption: str | None = None) -> dict[str, str]:
@@ -568,4 +592,8 @@ def run_trace(payload: dict[str, Any]) -> dict[str, Any]:
     summary_df = pd.DataFrame(summary_rows)
     actions.append(node(title="Финальная сводка", blocks=[block_table(summary_df)]))
 
-    return {"actions": actions, "summaryTableHtml": df_to_html(summary_df)}
+    return {
+        "actions": actions,
+        "summaryTableHtml": df_to_html(summary_df),
+        "checksTableHtml": df_to_html(checks_df),
+    }
