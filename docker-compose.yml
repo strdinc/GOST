@@ -12,34 +12,48 @@ services:
       - "traefik.docker.network=proxy"
       - "traefik.http.services.gost.loadbalancer.server.port=5000"
 
-      # Main app over HTTPS (www host)
-      - "traefik.http.routers.gost-www-https.rule=Host(`www.gost.strdinc.space`)"
-      - "traefik.http.routers.gost-www-https.entrypoints=websecure"
-      - "traefik.http.routers.gost-www-https.tls=true"
-      - "traefik.http.routers.gost-www-https.tls.certresolver=myresolver"
-      - "traefik.http.routers.gost-www-https.service=gost"
+      # lab3 app over HTTPS
+      - "traefik.http.routers.gost-lab3-https.rule=Host(`lab3.gost.strdinc.space`)"
+      - "traefik.http.routers.gost-lab3-https.entrypoints=websecure"
+      - "traefik.http.routers.gost-lab3-https.tls=true"
+      - "traefik.http.routers.gost-lab3-https.tls.certresolver=myresolver"
+      - "traefik.http.routers.gost-lab3-https.service=gost"
 
-      # Redirect HTTP -> HTTPS for www host
-      - "traefik.http.routers.gost-www-http.rule=Host(`www.gost.strdinc.space`)"
-      - "traefik.http.routers.gost-www-http.entrypoints=web"
-      - "traefik.http.routers.gost-www-http.middlewares=gost-redirect-https"
-      - "traefik.http.middlewares.gost-redirect-https.redirectscheme.scheme=https"
-      - "traefik.http.middlewares.gost-redirect-https.redirectscheme.permanent=true"
+      # Redirect HTTP -> HTTPS for lab3
+      - "traefik.http.routers.gost-lab3-http.rule=Host(`lab3.gost.strdinc.space`)"
+      - "traefik.http.routers.gost-lab3-http.entrypoints=web"
+      - "traefik.http.routers.gost-lab3-http.middlewares=gost-lab3-redirect-https"
+      - "traefik.http.middlewares.gost-lab3-redirect-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.gost-lab3-redirect-https.redirectscheme.permanent=true"
 
-      # Redirect non-www app host -> www app host
-      - "traefik.http.routers.gost-nowww-http.rule=Host(`gost.strdinc.space`)"
-      - "traefik.http.routers.gost-nowww-http.entrypoints=web"
-      - "traefik.http.routers.gost-nowww-http.middlewares=gost-to-www"
-      - "traefik.http.routers.gost-nowww-http.service=noop@internal"
-      - "traefik.http.routers.gost-nowww-https.rule=Host(`gost.strdinc.space`)"
-      - "traefik.http.routers.gost-nowww-https.entrypoints=websecure"
-      - "traefik.http.routers.gost-nowww-https.tls=true"
-      - "traefik.http.routers.gost-nowww-https.tls.certresolver=myresolver"
-      - "traefik.http.routers.gost-nowww-https.middlewares=gost-to-www"
-      - "traefik.http.routers.gost-nowww-https.service=noop@internal"
-      - "traefik.http.middlewares.gost-to-www.redirectregex.regex=^https?://gost\\.strdinc\\.space/?(.*)"
-      - "traefik.http.middlewares.gost-to-www.redirectregex.replacement=https://www.gost.strdinc.space/$${1}"
-      - "traefik.http.middlewares.gost-to-www.redirectregex.permanent=true"
+      # lab4 app over HTTPS
+      - "traefik.http.routers.gost-lab4-https.rule=Host(`lab4.gost.strdinc.space`)"
+      - "traefik.http.routers.gost-lab4-https.entrypoints=websecure"
+      - "traefik.http.routers.gost-lab4-https.tls=true"
+      - "traefik.http.routers.gost-lab4-https.tls.certresolver=myresolver"
+      - "traefik.http.routers.gost-lab4-https.service=gost"
+
+      # Redirect HTTP -> HTTPS for lab4
+      - "traefik.http.routers.gost-lab4-http.rule=Host(`lab4.gost.strdinc.space`)"
+      - "traefik.http.routers.gost-lab4-http.entrypoints=web"
+      - "traefik.http.routers.gost-lab4-http.middlewares=gost-lab4-redirect-https"
+      - "traefik.http.middlewares.gost-lab4-redirect-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.gost-lab4-redirect-https.redirectscheme.permanent=true"
+
+      # Redirect old hosts -> lab3
+      - "traefik.http.routers.gost-root-http.rule=Host(`gost.strdinc.space`) || Host(`www.gost.strdinc.space`)"
+      - "traefik.http.routers.gost-root-http.entrypoints=web"
+      - "traefik.http.routers.gost-root-http.middlewares=gost-root-to-lab3"
+      - "traefik.http.routers.gost-root-http.service=noop@internal"
+      - "traefik.http.routers.gost-root-https.rule=Host(`gost.strdinc.space`) || Host(`www.gost.strdinc.space`)"
+      - "traefik.http.routers.gost-root-https.entrypoints=websecure"
+      - "traefik.http.routers.gost-root-https.tls=true"
+      - "traefik.http.routers.gost-root-https.tls.certresolver=myresolver"
+      - "traefik.http.routers.gost-root-https.middlewares=gost-root-to-lab3"
+      - "traefik.http.routers.gost-root-https.service=noop@internal"
+      - "traefik.http.middlewares.gost-root-to-lab3.redirectregex.regex=^https?://(?:www\\.)?gost\\.strdinc\\.space/?(.*)"
+      - "traefik.http.middlewares.gost-root-to-lab3.redirectregex.replacement=https://lab3.gost.strdinc.space/$${1}"
+      - "traefik.http.middlewares.gost-root-to-lab3.redirectregex.permanent=true"
 
 networks:
   proxy:

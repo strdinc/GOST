@@ -450,3 +450,15 @@ def build_pdf_report(payload: dict[str, Any], simple: bool = False) -> tuple[str
     prefix = "gost-simple-report" if simple else "gost-full-report"
     filename = f"{prefix}-{timestamp}.pdf"
     return filename, markdown, pdf_bytes
+
+
+def build_pdf_report_from_result(
+    payload: dict[str, Any],
+    result: dict[str, Any],
+    prefix: str,
+) -> tuple[str, str, bytes]:
+    markdown = build_markdown_report(result, payload)
+    pdf_bytes = markdown_to_pdf_bytes(markdown)
+    timestamp = dt.datetime.now().strftime("%Y%m%d-%H%M%S")
+    filename = f"{prefix}-{timestamp}.pdf"
+    return filename, markdown, pdf_bytes

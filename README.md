@@ -5,6 +5,8 @@
 - `frontend` собирается в `backend/dist`
 - Flask сразу раздает этот собранный фронт
 - API доступно по `/api/*`
+- `lab3.gost.strdinc.space` открывает лабораторную 3
+- `lab4.gost.strdinc.space` открывает лабораторную 4
 
 ## Структура
 
@@ -49,10 +51,12 @@ python app.py
 В `docker-compose.yml` уже настроено:
 
 - сеть: `proxy` (external)
-- основной домен: `www.gost.strdinc.space`
+- `lab3.gost.strdinc.space` -> лабораторная 3
+- `lab4.gost.strdinc.space` -> лабораторная 4
 - certresolver: `myresolver`
-- редирект `http -> https` для `www.gost.strdinc.space`
-- редирект `gost.strdinc.space` на `https://www.gost.strdinc.space`
+- редирект `http -> https` для `lab3.gost.strdinc.space`
+- редирект `http -> https` для `lab4.gost.strdinc.space`
+- редирект старых адресов `gost.strdinc.space` и `www.gost.strdinc.space` на `https://lab3.gost.strdinc.space`
 
 Запуск:
 
@@ -64,7 +68,8 @@ docker compose up -d --build
 
 - Терминальный дамп убран из UI.
 - Все таблицы строятся через `pandas.DataFrame` и рендерятся как HTML-таблицы.
-- Пункты 7-11 разбиты на отдельные выпадающие шаги.
+- Лабораторная 3 и лабораторная 4 обслуживаются одним backend.
+- Пункты 7-11 лабораторной 3 разбиты на отдельные выпадающие шаги.
 - В блоке «Финальная сводка» есть кнопка «Скачать в PDF».
 - Для PDF-экспорта на сервере нужен `pandoc` (кнопка использует backend endpoint `/api/report/pdf`).
   В Docker-образе зависимости для PDF уже устанавливаются автоматически (`pandoc + weasyprint`).
