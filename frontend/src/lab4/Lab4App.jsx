@@ -86,15 +86,9 @@ function Lab4App() {
       <section className="hero panel">
         <p className="eyebrow">LAB 4</p>
         <h1>Развертка мастер-ключа «Кузнечик»</h1>
-        <p className="subtitle">Сайт для поддомена `lab4.gost.strdinc.space`.</p>
       </section>
 
-      <section className="panel">
-        <p className="subtitle">
-          В этой лабораторной мастер-ключ строится как `K = a || b`, где `a` и `b`
-          собираются из `sourceBytes` по двум отображениям.
-        </p>
-      </section>
+    
 
       <section className="panel">
         <form onSubmit={runTrace} className="input-grid">

@@ -88,7 +88,6 @@ function Lab3App() {
       <section className="hero panel">
         <p className="eyebrow">LAB 3</p>
         <h1>Преобразования шифра «Кузнечик»</h1>
-        <p className="subtitle">Сайт для поддомена `lab3.gost.strdinc.space`.</p>
       </section>
 
       <section className="panel">
